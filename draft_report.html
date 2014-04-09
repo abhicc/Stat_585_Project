@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Draft of Report</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Draft of Report</h1>
+
+<p>By Abhishek Chakraborty</p>
+
+<p>I have obtained the data from <a href="http://www.espnsoccernet.com">www.espnsoccernet.com</a> for the players at their national level performances as well their performances for their clubs(includes clubs playing in the leagues of England, Germany, Italy and Spain).I have segmented the players into Goalkeepers and Outfield players.This is because the statistics(columns) for the goalkeepers and the outfield players are different.
+Then I have merged the datasets to obtain statistics for each player at their national level as well as club level.</p>
+
+<pre><code class="r">library(XML)
+library(plyr)
+library(ggplot2)
+
+# Information(id&#39;s) of each club playing at each of the above mentioned
+# leagues.We need the id&#39;s to get the data for each club,since id is the
+# unique element that denotes a particular club in the website.
+clubs &lt;- read.csv(&quot;club teams.csv&quot;)
+dim(clubs)  # There are 20 clubs in each of English,Italian and Spanish leagues and 18 in German league.
+</code></pre>
+
+<pre><code>## [1] 78  3
+</code></pre>
+
+<pre><code class="r">head(clubs)
+</code></pre>
+
+<pre><code>##            Teams  id League
+## 1        arsenal 359    epl
+## 2    aston villa 362    epl
+## 3   cardiff city 347    epl
+## 4        chelsea 363    epl
+## 5 crystal palace 384    epl
+## 6        everton 368    epl
+</code></pre>
+
+<pre><code class="r"># Id&#39;s for the national teams participating in World Cup 2014.
+nations &lt;- read.csv(&quot;national teams.csv&quot;)
+head(nations)
+</code></pre>
+
+<pre><code>##   National.Teams  id
+## 1      Australia 628
+## 2           Iran 469
+## 3          Japan 627
+## 4    South Korea 451
+## 5        Algeria 624
+## 6       Cameroon 656
+</code></pre>
+
+<pre><code class="r">
+# Extracting the data for players of all nations participating in 2014 World
+# Cup
+nat_goalie &lt;- nat_player &lt;- NULL
+for (i in nations$id) {
+    url &lt;- paste(&quot;http://espnfc.com/team/squad/_/id/&quot;, i, &quot;/season/2013/league/all/brazil?cc=5901&quot;, 
+        sep = &quot;&quot;)
+    table &lt;- readHTMLTable(url)
+    goalie &lt;- table[[1]]
+    players &lt;- table[[2]]
+    nat_goalie &lt;- rbind(nat_goalie, data.frame(goalie, National.Teams = nations$National.Teams[nations$id == 
+        i]))  #  Goalkeeping statistics
+    nat_player &lt;- rbind(nat_player, data.frame(players, National.Teams = nations$National.Teams[nations$id == 
+        i]))  # Statistics for Outfield players
+}
+
+nat_player$G &lt;- as.numeric(as.character(nat_player$G))
+nat_player$GS &lt;- as.numeric(as.character(nat_player$GS))
+nat_player$SB &lt;- as.numeric(as.character(nat_player$SB))
+
+n.Goals &lt;- ddply(nat_player, .(National.Teams), summarize, Goals.per.match = sum(G)/max(GS + 
+    SB), Total.Goals = sum(G))
+
+# Extracting the data for players of all clubs that are part of the
+# English,German,Italian and Spanish leagues.
+club_goalie &lt;- club_player &lt;- NULL
+for (i in clubs$id) {
+    url &lt;- paste(&quot;http://espnfc.com/team/squad/_/id/&quot;, i, &quot;/season/2013/league/all/manchester-united?cc=5901&quot;, 
+        sep = &quot;&quot;)
+    table &lt;- readHTMLTable(url)
+    cgoalie &lt;- table[[1]]
+    cplayers &lt;- table[[2]]
+    club_goalie &lt;- rbind(club_goalie, data.frame(cgoalie, Teams = clubs$Teams[clubs$id == 
+        i], League = clubs$League[clubs$id == i]))  # Goalkeeping statistics
+    club_player &lt;- rbind(club_player, data.frame(cplayers, Teams = clubs$Teams[clubs$id == 
+        i], League = clubs$League[clubs$id == i]))  # Statistics for Outfield players
+}
+
+goalie &lt;- merge(nat_goalie, club_goalie, by = &quot;NAME&quot;)
+head(goalie)
+</code></pre>
+
+<pre><code>##            NAME NUM.x GS.x SB.x SV.x GC.x FC.x FS.x YC.x RC.x W.x L.x D.x
+## 1 Asmir Begovic     -    9    0   14   11    0    1    1    0   1   0   0
+## 2    Ben Foster     -    0    1    0    0    0    0    0    0   0   0   0
+## 3          Beto    22    2    0    2    2    0    2    0    0   1   0   0
+## 4    Brad Guzan     -    1    1    4    5    0    0    0    0   0   0   0
+## 5    Brad Jones     -    0    1    3    3    0    0    0    0   0   0   0
+## 6 Claudio Bravo     -    9    0   31   10    1    3    1    0   0   0   0
+##           National.Teams NUM.y GS.y SB.y SV.y GC.y FC.y FS.y YC.y RC.y W.y
+## 1 Bosnia and Herzegovina     1   30    0  104   35    0    5    1    0   1
+## 2                England     1   20    0   52   31    1    0    0    0   0
+## 3               Portugal    13   36    0   90   47    0    7    3    0   8
+## 4          United States     1   32    0   90   48    1    4    1    0   1
+## 5              Australia     1    5    0    8    4    0    0    0    0   3
+## 6                  Chile     1   36    0  121   54    4    7    3    0   2
+##   L.y D.y         Teams  League
+## 1   3   0         stoke     epl
+## 2   2   0     west brom     epl
+## 3   3   3       sevilla la liga
+## 4   3   0   aston villa     epl
+## 5   3   0     liverpool     epl
+## 6   1   2 real sociedad la liga
+</code></pre>
+
+<pre><code class="r">player &lt;- merge(nat_player, club_player, by = &quot;NAME&quot;)
+head(player)
+</code></pre>
+
+<pre><code>##               NAME NUM.x GS.x SB.x G.x SH.x SG.x A.x FC.x FS.x YC.x RC.x
+## 1       Aaron Hunt     -    0    1   0    0    0   0    1    2    0    0
+## 2     Aaron Lennon     -    0    1   0    0    0   0    0    0    0    0
+## 3     Adam Lallana     -    2    1   0    3    2   1    9    5    0    0
+## 4        Adil Rami     -    1    1   0    0    0   0    2    0    0    0
+## 5        Adil Rami     -    1    1   0    0    0   0    2    0    0    0
+## 6 Adlene Guedioura     -    3    1   0    0    0   0    0    0    2    0
+##   National.Teams NUM.y GS.y SB.y G.y SH.y SG.y A.y FC.y FS.y YC.y RC.y
+## 1        Germany    14   27    0   4   52   22   4   25   45    2    0
+## 2        England     7   28    2   1   24    8   1    8   20    1    0
+## 3        England    20   34    4  11   66   25   6   34   67    3    0
+## 4         France     4    6    0   0    4    0   0    9    5    1    1
+## 5         France    13   14    2   3    7    5   1   17   10    3    0
+## 6        Algeria    31    4    4   0   13    3   0   10    4    0    0
+##            Teams     League
+## 1  werder bremen bundesliga
+## 2      tottenham        epl
+## 3    southampton        epl
+## 4       valencia    la liga
+## 5       ac milan    seria A
+## 6 crystal palace        epl
+</code></pre>
+
+<pre><code class="r">
+# .x denotes the performances for the national teams and .y for the clubs
+player$G.x &lt;- as.numeric(as.character(player$G.x))
+player$G.y &lt;- as.numeric(as.character(player$G.y))
+player$GS.x &lt;- as.numeric(as.character(player$GS.x))
+player$SB.x &lt;- as.numeric(as.character(player$SB.x))
+player$GS.y &lt;- as.numeric(as.character(player$GS.y))
+player$SB.y &lt;- as.numeric(as.character(player$SB.y))
+
+Goals &lt;- ddply(player, .(National.Teams), summarize, sum.N.G = sum(G.x)/max(GS.x + 
+    SB.x), sum.C.G = sum(G.y)/max(GS.y + SB.y))
+
+# I was just exploring the dataset.  I would be looking at information
+# somewhat similar to the plot below.  This plots the goals per match of
+# each team playing in 2014 edition in the past season(2013/14).It helps us
+# to determine the kind of striking form that team is in going into the
+# World cup.
+qplot(x = reorder(National.Teams, Goals.per.match, sum), weight = Goals.per.match, 
+    data = n.Goals, geom = &quot;bar&quot;, ylab = &quot;Goals per Match&quot;, xlab = &quot;Teams&quot;) + 
+    coord_flip()
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-1"/> </p>
+
+<p>One of the problems still needed to be fixed is the occurrence of some players more than once,since they have played for more than one club in the past season.
+I intend to construct a statistic for each player that will predict the impact he is possibly going to have in the World cup for his national team.This statistic will take into account the statistics denoting his performances for the club and national team in the past season.
+I also plan to look a bit into some exploratory data analysis for the data we have at hand,like looking into the no. of goals per individual per match,no. of assissts,no. of fouls conceded etc. that will indicate how is the team or the player going to perform at 2014 World Cup.</p>
+
+</body>
+
+</html>
+
