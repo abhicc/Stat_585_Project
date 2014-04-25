@@ -1,0 +1,515 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,mathrsfs,fancyhdr,syntonly,lastpage,hyperref,enumitem,graphicx,verbatim}
+
+\hypersetup{colorlinks=true,urlcolor=black}
+
+\topmargin      -1.5cm   % read Lamport p.163
+\oddsidemargin  -0.04cm  % read Lamport p.163
+\evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+\textwidth      16.50cm
+\textheight     23.94cm
+\parskip         7.2pt   % sets spacing between paragraphs
+\parindent         0pt   % sets leading space for paragraphs
+\pagestyle{empty}        % Uncomment if don't want page numbers
+\pagestyle{fancyplain}
+
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\lhead{Project Report}
+\chead{STAT 585X}
+\rhead{Abhishek Chakraborty}
+
+
+The World cup is almost a month and a half away.After a pretty tough qualification process,32 teams have made it to the final stage.These 32 teams are clubbed into 8 groups based on their seedings.The two best teams from each group will make it to the next round.
+
+This project looks into the performances of these national teams at the individual player level.It also takes into account the performance of the players for their respective clubs.Based on their performances at both the national and club level,we determine the impact for each player and transform the impact ratings to the impact of their respective countries.The impact rating for each country helps us to figure out which of the 32 nations are better placed to progress through to the final rounds of the World Cup.
+
+I picked up the infromation for each player at both his national and club level from the soccer website `www.espnsoccernet.com' for the 2013-14 season,since I felt that would best reflect the players current playing form.It contains information for each of the outfield players as well as the goalkeepers that are included in the team roster.The website uses a unique ID for each country and for each club.I have considered the clubs from 4 of the best soccer leagues in the world,viz, English Premier League(epl),Spanish League(la liga),Italian League(serie A),and the German Football League(bundesliga).I expect most of the players playing in this year's World Cup to be featuring for the clubs of these 4 leagues.
+
+The code given below obtains the data from the website for the countries and the clubs of these 4 leagues.The respective csv files has the ID's for each of the clubs and for each country as well.
+
+<<>>=
+library(XML)
+library(plyr)
+library(ggplot2)
+@
+
+<<>>=
+#=============================================================
+##### ID's of National Teams and Club Teams on the website
+#=============================================================
+clubs <- read.csv("club teams.csv")
+nations <- read.csv("national teams.csv")
+
+#=============================================================
+##### Getting the data of National Teams frob the web
+#=============================================================
+nat_goalie <- nat_player <- NULL
+for(i in nations$id)
+{
+  url <- paste("http://espnfc.com/team/squad/_/id/"
+               ,i,"/season/2013/league/all/brazil?cc=5901",sep="")
+  table <- readHTMLTable(url)
+  goalie <- table[[1]]
+  players <- table[[2]]
+  nat_goalie <- rbind(nat_goalie,
+                      data.frame(goalie, National.Teams = 
+                                   nations$National.Teams[nations$id == i]))
+  nat_player <- rbind(nat_player,
+                      data.frame(players, National.Teams = 
+                                   nations$National.Teams[nations$id == i]))
+}
+
+nat_player$GS <- as.numeric(as.character(nat_player$GS))  
+nat_player$SB <- as.numeric(as.character(nat_player$SB))
+nat_player$G  <- as.numeric(as.character(nat_player$G))
+nat_player$SH <- as.numeric(as.character(nat_player$SH))  
+nat_player$SG <- as.numeric(as.character(nat_player$SG))
+nat_player$A  <- as.numeric(as.character(nat_player$A))
+nat_player$FC <- as.numeric(as.character(nat_player$FC))
+nat_player$FS <- as.numeric(as.character(nat_player$FS))
+nat_player$YC <- as.numeric(as.character(nat_player$YC))
+nat_player$RC <- as.numeric(as.character(nat_player$RC))
+head(nat_player)
+
+nat_goalie$GS <- as.numeric(as.character(nat_goalie$GS))
+nat_goalie$SB <- as.numeric(as.character(nat_goalie$SB))
+nat_goalie$SV <- as.numeric(as.character(nat_goalie$SV))
+nat_goalie$GC <- as.numeric(as.character(nat_goalie$GC))
+nat_goalie$FC <- as.numeric(as.character(nat_goalie$FC))
+nat_goalie$FS <- as.numeric(as.character(nat_goalie$FS))
+nat_goalie$YC <- as.numeric(as.character(nat_goalie$YC))
+nat_goalie$RC <- as.numeric(as.character(nat_goalie$RC))
+nat_goalie$W  <- as.numeric(as.character(nat_goalie$W))
+nat_goalie$L  <- as.numeric(as.character(nat_goalie$L))
+nat_goalie$D  <- as.numeric(as.character(nat_goalie$D))
+head(nat_goalie)
+
+#=============================================================
+##### Getting the data for Club Teams frob the web
+#=============================================================
+club_goalie <- club_player <- NULL
+for(i in clubs$id)
+{
+  url <- 
+    paste("http://espnfc.com/team/squad/_/id/"
+          ,i,"/season/2013/league/all/manchester-united?cc=5901",sep="")
+  table <- readHTMLTable(url)
+  cgoalie <- table[[1]]
+  cplayers <- table[[2]]
+  club_goalie <- rbind(club_goalie, 
+                       data.frame(cgoalie, Teams = clubs$Teams[clubs$id == i],
+                       League = clubs$League[clubs$id == i]))
+  club_player <- rbind(club_player,
+                       data.frame(cplayers, Teams = clubs$Teams[clubs$id == i],
+                       League = clubs$League[clubs$id == i]))
+}
+
+club_player$GS <- as.numeric(as.character(club_player$GS))  
+club_player$SB <- as.numeric(as.character(club_player$SB))
+club_player$G  <- as.numeric(as.character(club_player$G))
+club_player$SH <- as.numeric(as.character(club_player$SH))  
+club_player$SG <- as.numeric(as.character(club_player$SG))
+club_player$A  <- as.numeric(as.character(club_player$A))
+club_player$FC <- as.numeric(as.character(club_player$FC))
+club_player$FS <- as.numeric(as.character(club_player$FS))
+club_player$YC <- as.numeric(as.character(club_player$YC))
+club_player$RC <- as.numeric(as.character(club_player$RC))
+head(club_player)
+
+club_goalie$GS <- as.numeric(as.character(club_goalie$GS))
+club_goalie$SB <- as.numeric(as.character(club_goalie$SB))
+club_goalie$SV <- as.numeric(as.character(club_goalie$SV))
+club_goalie$GC <- as.numeric(as.character(club_goalie$GC))
+club_goalie$FC <- as.numeric(as.character(club_goalie$FC))
+club_goalie$FS <- as.numeric(as.character(club_goalie$FS))
+club_goalie$YC <- as.numeric(as.character(club_goalie$YC))
+club_goalie$RC <- as.numeric(as.character(club_goalie$RC))
+club_goalie$W  <- as.numeric(as.character(club_goalie$W))
+club_goalie$L  <- as.numeric(as.character(club_goalie$L))
+club_goalie$D  <- as.numeric(as.character(club_goalie$D))
+head(club_goalie)
+@
+Glossary
+
+GS: Games Started, SB: Used as Substitute, G: Goals, A: Assists, SH: Shots, SG: Shots on goal, YC: Yellow Cards, RC: Red Cards, FC: Fouls Committed, FS: Fouls Suffered, SV: Saves, GC: Goals conceded, W: Wins, L: Losses, D: Draws
+
+One of the problems with the data was that some of the players had more than one entries against their name.So I rolled up the numerous entries to arrive at the single entry for that player.To determine the impact of each player,I defined the following variables:
+"Played" - no. of appearances,i.e,sum of the no.of games started(GS) and the no.of games as a substitute(SB)
+"Cards" - total no. of Cards,i.e,sum of the no.of Yellow Cards(YC) and no.of Red Cards(RC).
+
+I also consider only those players who have made atleast one appearance for the country or club,since there are a few players who were in the team roster but did not make an appearance through out the entire previous season.
+
+I analysed the performances at the national level(players followed by goalkeepers) and then the performances at the club level(players followed by goalkeepers).
+<<>>=
+#=============================================================
+#### National Teams Impact (Players)
+#=============================================================
+nat_pl <- ddply(nat_player[,-c(1)], .(NAME, National.Teams), 
+                summarize, GS=sum(GS),SB=sum(SB),G=sum(G),
+                SH = sum(SH), SG = sum(SG),A = sum(A), FC=sum(FC),
+                FS=sum(FS),YC=sum(YC),RC=sum(RC) )
+nat_pl$Played <- nat_pl$GS + nat_pl$SB
+nat_pl.sub <- subset(nat_pl, Played > 0)
+nat_pl.sub$Cards <- nat_pl.sub$YC + nat_pl.sub$RC
+@
+I have employed the technique of k-means clustering (with 3 clusters) to break up the entire group of national players(as well as club players,as we see later) into 3 clusters.I have used the following attributes on a per match basis.
+
+G -Goals Scored
+SG-Shots on Goal
+A - Assists
+FC - Fouls Committed
+Cards - no of cards earned
+
+I considered the aforementioned variables because to me they would best differentiate between the attacking and defensive ability of a player.I tried to bring out the best attribute for a player,(for eg. a striker is best at scoring goals,a defender is best at tackling and so on) so that I could assign a weight to that player's attributes. For each attribute the weights have been calculated as a ratio of the mean in that cluster to the sum of the means for all clusters.
+<<>>=
+### Clustering
+
+nat_pl.s <- as.data.frame(apply(nat_pl.sub[, -c(1:4, 6, 10:13)], 2,
+                                function(x){round(x/nat_pl.sub$Played, 4)}))
+#nat_pl.s$Played <- nat_pl.sub$Played
+d <- dist(nat_pl.s)
+k <- kmeans(d, 3)
+nat_pl.sub$cluster <- k$cluster
+Players <- data.frame(Name = nat_pl.sub$NAME, Cluster = k$cluster)
+
+nat_pl.new <- subset(nat_pl.sub, select = G:cluster)
+nat_pl.new <- as.data.frame(apply(nat_pl.new[, -c(2,6:9, 11)]
+                                  , 2, function(x){x/nat_pl.new$Played}))
+nat_pl.new$Played <- nat_pl.sub$Played
+nat_pl.new$cluster <- nat_pl.sub$cluster
+
+### determining the weights
+mean.nat_pl <- ddply(nat_pl.new, .(cluster), summarize, 
+                     G = mean(G), SG = mean(SG), A = mean(A), 
+                     FC = mean(FC), Cards = mean(Cards) )
+sum.wt <- as.numeric(apply(mean.nat_pl[, -c(1)], 2, sum))
+wt <- ddply(mean.nat_pl, .(cluster), summarize, 
+            G.w = G/sum.wt[1], SG.w = SG/sum.wt[2], 
+            A.w = A/sum.wt[3], FC.w = FC/sum.wt[4], 
+            Cards.w = Cards/sum.wt[5])
+@
+
+Let us take a look at the cluster for International Players
+<<fig=TRUE,echo=TRUE>>=
+ggpcp(data = nat_pl.new, vars = names(nat_pl.new[c(1:5)])) +
+  geom_line(aes(color = factor(cluster))) + facet_wrap( ~ cluster, nrow = 3 ) 
+@
+
+
+The plot shows some important characteristics.We can see that players in one of the 3 clusters score more goals(G) and have the most shots on target(SG) out of all the clusters.So these players can be thought of attacking options in a soccer pitch.There is also significant variability in the no.of goals scored as well as the shots on target.The no.of goals and shots on target dries up as we move from one cluster to another.But one important point to note is that the assissts for the other 2 clusters are high.This is because in modern day soccer the midfielders and wing backs provide the most assissts.The strikers just put the balls into the net.The fouls committed(FC) is also pretty high for one cluster as compared to the other two.One of the clusters can be thought of as including players from the defensive aspect of the game.They are more adept at tackling than the attacking players.The no of cards(Cards) is pretty high for all the clusters.The reasoning behind that is the referees becoming stricter nowadays and may be because of the game getting more physical. 
+
+To calculate the impact for each player,the values of the attributes per match have been multiplied with their respective weights and summed up.The impact for a particular team is the mean impact of all its players given they have made atleast one appearance in the past season.
+
+<<>>=
+nat.players <- nat_pl.sub[, -c(3:4, 6, 10:12)]
+nat.pl.1 <- as.data.frame(apply(nat.players[, -c(1:2, 7, 9)], 2,
+                                function(x){x/nat.players$Played}))
+nat.players <- cbind(nat.players[, c(1:2, 7, 9)], nat.pl.1)
+nat.players.m <- merge(nat.players, wt, by = "cluster")
+nat.impact <- ddply(nat.players.m, .(cluster, NAME), transform,
+                    Impact = G*G.w + SG*SG.w + A*A.w + FC*FC.w + Cards*Cards.w )
+nat.team.impact <- ddply(nat.impact, .(National.Teams),
+                         summarize, Impact = mean(Impact))
+nat.team.impact.ordered <- 
+  nat.team.impact[order(nat.team.impact$Impact, decreasing = T), ]
+@
+
+<<fig=TRUE,echo=TRUE>>=
+qplot(reorder(National.Teams,Impact),data=nat.team.impact.ordered,
+      weight=Impact,xlab="National Teams",ylab="Impact_Players")+coord_flip()
+
+@
+
+This plot shows that Chile and Uruguay are the best performing National Teams.The teams that we expect (for eg.Italy,Brazil,Spain) did not have a year that they would have liked,but the difference in impact is pretty low.
+
+For the impact of the Goalkeepers,the same methodology have been used but the variables considered are a little different.
+
+SV - Saves
+GC - Goals Conceded
+Fc - Fouls Committed
+Cards - cards in a match
+
+Those goalkeeperes have been considered who have played the most in the previous year.This is because the position of the goalkeeper is more or less fixed in a team.Thus only the 32 goalkeepers expected to feature for their country have been taken into account.Another point to note here is that only 2 clusters have been considered for the goalkeepers just to differentiate between the better performing from the `not so good' keepers.
+
+<<>>=
+#=============================================================
+#### National Teams Impact (Goalkeepers)
+#=============================================================
+  
+nat_gl <- ddply(nat_goalie[,-c(1)], .(NAME, National.Teams), summarize, 
+                GS=sum(GS),SB=sum(SB),SV=sum(SV),GC = sum(GC), 
+                FC=sum(FC),FS=sum(FS),YC=sum(YC),RC=sum(RC), 
+                W = sum(W), L = sum(L), D = sum(D) )
+nat_gl$Played <- nat_gl$GS + nat_gl$SB
+nat_gl.sub <- subset(nat_gl, Played > 0)
+nat_gl.sub$Cards <- nat_gl.sub$YC + nat_gl.sub$RC
+#nat_gl.sub$GC <-  - nat_gl.sub$GC
+
+Best.goalie.by.nat <- ddply(nat_gl.sub, .(National.Teams), summarize,
+                            NAME = NAME[Played == max(Played) ],
+                            GS = GS[Played == max(Played) ])
+Best.goalie.by.nat <- ddply(nat_gl.sub, .(National.Teams), summarize,
+                            NAME = NAME[GS == max(GS)])
+Best.goalie.by.nat <- Best.goalie.by.nat[-24, ]
+
+nat_gl.sub <- subset(nat_gl.sub, NAME %in% Best.goalie.by.nat$NAME)
+
+### Clustering
+
+nat_gl.s <- as.data.frame(apply(nat_gl.sub[, -c(1:4, 8:14)], 2,
+                                function(x){round(x/nat_gl.sub$Played, 4)}))
+#nat_pl.s$Played <- nat_pl.sub$Played
+d <- dist(nat_gl.s)
+k <- kmeans(d, 2)
+nat_gl.sub$cluster <- k$cluster
+Players <- data.frame(Name = nat_gl.sub$NAME, Cluster = k$cluster)
+
+nat_gl.new <- subset(nat_gl.sub, select = SV:cluster)
+nat_gl.new <- as.data.frame(apply(nat_gl.new[, -c(4:10, 12)], 2,
+                                  function(x){x/nat_gl.new$Played}))
+nat_gl.new$Played <- nat_gl.sub$Played
+nat_gl.new$cluster <- nat_gl.sub$cluster
+@
+
+The plot of the clusters is shown below.
+<<fig=TRUE,echo=TRUE>>=
+ggpcp(data = nat_gl.new, vars = names(nat_gl.new[c(1:4)])) + 
+  geom_line(aes(color = factor(cluster))) + facet_wrap( ~ cluster, nrow = 2 )
+@
+
+We can see that the goalkeepers in one cluster are better at saves and hence they concede lesser goals during a match.The fouls committed is also higher for them which says that they are more involved during a match.
+
+The impact for the goalkeepers are calculated as below
+<<>>=
+mean.nat_gl <- ddply(nat_gl.new, .(cluster), summarize,
+                     SV = mean(SV), GC = mean(GC), FC = mean(FC),
+                     Cards = mean(Cards) )
+
+sum.wt <- as.numeric(apply(mean.nat_gl[, -c(1)], 2, sum))
+wt <- ddply(mean.nat_gl, .(cluster), summarize, SV.w = SV/sum.wt[1],
+            GC.w = GC/sum.wt[2], FC.w = FC/sum.wt[3],Cards.w = Cards/sum.wt[4])
+
+#nat_pl.sub$Cards <- nat_pl.sub$YC + nat_pl.sub$RC 
+nat.goalie <- nat_gl.sub[, -c(3:4, 8:13)]
+nat.gl.1 <- as.data.frame(apply(nat.goalie[, -c(1:2, 6, 8)], 2, 
+                                function(x){x/nat.goalie$Played}))
+nat.goalie <- cbind(nat.goalie[, c(1:2, 6, 8)], nat.gl.1)
+nat.goalie.m <- merge(nat.goalie, wt, by = "cluster")
+nat.gl.impact <- ddply(nat.goalie.m, .(cluster, NAME), transform, 
+                       Impact = SV*SV.w + GC*GC.w + FC*FC.w + Cards*Cards.w )
+nat.gl.team.impact <- ddply(nat.gl.impact, .(National.Teams), 
+                            summarize,gl.Impact = mean(Impact))
+nat.gl.team.impact.reordered <-
+  nat.gl.team.impact[order(nat.gl.team.impact$gl.Impact, decreasing = T), ]
+@
+
+
+Now we will move over to the performances of the players at their club level.The impact of the players at their respective club is calculated with the same methods as in impact of the players at their national level.One point to note is that I only include those players whose respective countries are participating at this World Cup.
+
+<<>>=
+#=============================================================
+#### Club Player Impact
+#=============================================================
+
+player <- merge(nat_pl.sub, club_player, by = "NAME")
+club_pl <- ddply(player[,-c(3:13)], .(NAME, National.Teams),
+                 summarize, GS=sum(GS.y),SB=sum(SB.y),G=sum(G.y),
+                 SH = sum(SH.y), SG = sum(SG.y),A = sum(A.y),
+                 FC=sum(FC.y),FS=sum(FS.y),YC=sum(YC.y),RC=sum(RC.y) )
+club_pl$Played <- club_pl$GS + club_pl$SB
+club_pl.sub <- subset(club_pl, Played > 0)
+club_pl.sub$Cards <- club_pl.sub$YC + club_pl.sub$RC
+
+### Clustering
+
+club_pl.s <- as.data.frame(apply(club_pl.sub[, -c(1:4, 6, 10:13)], 2,
+                                 function(x){round(x/club_pl.sub$Played, 4)}))
+#club_pl.s$Played <- club_pl.sub$Played
+d <- dist(club_pl.s)
+k <- kmeans(d, 3)
+club_pl.sub$cluster <- k$cluster
+Players <- data.frame(Name = club_pl.sub$NAME, Cluster = k$cluster)
+
+club_pl.new <- subset(club_pl.sub, select = G:cluster)
+club_pl.new <- as.data.frame(apply(club_pl.new[, -c(2,6:9, 11)], 2,
+                                   function(x){x/club_pl.new$Played}))
+#club_pl.new$Played <- club_pl.sub$Played
+club_pl.new$cluster <- club_pl.sub$cluster
+@
+
+<<fig=TRUE,echo=TRUE>>=
+ggpcp(data = club_pl.new, vars = names(club_pl.new)[c(1:5)]) + 
+  geom_line(aes(color = factor(cluster))) + facet_wrap( ~ cluster, nrow = 3 )
+@
+
+We can see a similar sort of characteristics for the display of club level cluster as wee saw in the clusters for national level.But we can see the assissts(A) are increasing for the attacking players and the no of goals(G) per match is pretty high than that for national level.The fouls committed(FC) for each cluster is quite similar to what was expected. 
+
+The impact calculation is as follows:
+<<>>=
+mean.club_pl <- ddply(club_pl.new, .(cluster), summarize,
+                      G = mean(G),  SG = mean(SG), A = mean(A),
+                      FC = mean(FC), Cards = mean(Cards))
+
+sum.wt <- as.numeric(apply(mean.club_pl[, -c(1)], 2, sum))
+wt <- ddply(mean.club_pl, .(cluster), summarize,
+            G.w = G/sum.wt[1], SG.w = SG/sum.wt[2], A.w = A/sum.wt[3],
+            FC.w = FC/sum.wt[4], Cards.w = Cards/sum.wt[5])
+club.players <- club_pl.sub[, -c(3:4, 6, 10:12)]
+club.pl.1 <- as.data.frame(apply(club.players[, -c(1:2, 7, 9)], 2,
+                                 function(x){x/club.players$Played}))
+club.players <- cbind(club.players[, c(1:2, 7, 9)], club.pl.1)
+club.players.m <- merge(club.players, wt, by = "cluster")
+club.impact <- ddply(club.players.m, .(cluster, NAME), transform,
+                     Impact = G*G.w + SG*SG.w + A*A.w + FC*FC.w + Cards*Cards.w)
+club.team.impact <- ddply(club.impact, .(National.Teams),
+                          summarize, Impact = mean(Impact))
+no.players <- ddply(club_pl.sub, .(National.Teams),
+                    summarize, l = length(NAME))
+club.team.imp <- merge(no.players, club.team.impact, by = "National.Teams")
+club.team.impact <- ddply(club.team.imp, .(National.Teams),
+                          summarize, Impact = Impact + 5*l/sum(no.players$l))
+club.team.impact.ordered <-
+  club.team.impact[order(club.team.impact$Impact, decreasing = T), ]
+@
+
+
+Now we look at the impact for each country taking into account the club performances of the respective players.
+<<fig=TRUE,echo=TRUE>>=
+qplot(reorder(National.Teams,Impact),
+      data=club.team.impact.ordered,weight=Impact,
+      xlab="National Teams based on clubs",ylab="Impact_Players")+coord_flip()
+@
+
+We can observe that the players of Italy and Brazil perform really well at their club level than what they do at the international level.
+
+We then turn our attention to goalkeepers at club levels.We only had 14 of the 32 goalkeepers featuring in the World Cup playing in these 4 leagues.
+<<>>=
+#=============================================================
+#### Club Goalie Impact
+#=============================================================
+  
+goalie <- merge(Best.goalie.by.nat, club_goalie, by = "NAME")
+club_gl <- ddply(goalie[,-c(3, 15:16)], .(NAME, National.Teams),
+                 summarize, GS=sum(GS),SB=sum(SB),SV = sum(SV),
+                 GC=sum(GC),FC = sum(FC), FS=sum(FS),YC=sum(YC),RC=sum(RC) )
+club_gl$Played <- club_gl$GS + club_gl$SB
+club_gl.sub <- subset(club_gl, Played > 0)
+club_gl.sub$Cards <- club_gl.sub$YC + club_gl.sub$RC
+#club_gl.sub$GC <- - club_gl.sub$GC
+
+### Clustering
+
+club_gl.s <- as.data.frame(apply(club_gl.sub[, -c(1:4, 8:11)], 2,
+                                 function(x){round(x/club_gl.sub$Played, 4)}))
+#club_pl.s$Played <- club_pl.sub$Played
+d <- dist(club_gl.s)
+k <- kmeans(d, 2)
+club_gl.sub$cluster <- k$cluster
+Club.Goalie <- data.frame(Name = club_gl.sub$NAME, Cluster = k$cluster)
+club_gl.new <- subset(club_gl.sub, select = SV:cluster)
+club_gl.new <- as.data.frame(apply(club_gl.new[, -c(4:7,9)], 2,
+                                   function(x){x/club_gl.new$Played}))
+club_gl.new$Played <- club_gl.sub$Played
+club_gl.new$cluster <- club_gl.sub$cluster
+@
+
+The clusters for the club goalkeepers looks like
+<<fig=TRUE,echo=TRUE>>=
+ggpcp(data = club_gl.new, vars = names(club_gl.new)[c(1:4)]) + 
+  geom_line(aes(color = factor(cluster))) + facet_wrap( ~ cluster, nrow = 3 )
+@
+
+WE see that there is a significant difference in saves(SV) and goals conceded(GC).This may be because the good golakeepers play for teams that feature a strong defense.So they have to make lesser saves and eventually concede pretty less goals in a match.
+
+The impact calculation for the goalkeepers at their clubs
+<<>>=
+mean.club_gl <- ddply(club_gl.new, .(cluster), 
+                      summarize, SV = mean(SV),  GC = mean(GC), 
+                      FC = mean(FC), Cards = mean(Cards))
+
+sum.wt <- as.numeric(apply(mean.club_gl[, -c(1)], 2, sum))
+wt <- ddply(mean.club_gl, .(cluster), summarize, 
+            SV.w = SV/sum.wt[1], GC.w = GC/sum.wt[2], 
+            FC.w = FC/sum.wt[3], Cards.w = Cards/sum.wt[4])
+
+club.goalie <- club_gl.sub[, -c(3:4, 8:10)]
+club.gl.1 <- as.data.frame(apply(club.goalie[, -c(1:2, 6, 8)], 2,
+                                 function(x){x/club.goalie$Played}))
+club.goalie <- cbind(club.goalie[, c(1:2, 6, 8)], club.gl.1)
+club.goalie.m <- merge(club.goalie, wt, by = "cluster")
+club.gl.impact <- ddply(club.goalie.m, .(cluster, NAME), transform,
+                        Impact =SV*SV.w + GC*GC.w  + FC*FC.w + Cards*Cards.w)
+club.gl.team.impact <- ddply(club.gl.impact, .(National.Teams), summarize, 
+                             Impact = mean(Impact))
+club.gl.team.impact.reordered <-
+  club.gl.team.impact[order(club.gl.team.impact$Impact, decreasing = T), ]
+
+@
+
+Now lets focus on the final impact of a team.The impact of the players at their club level and national level have been taken into account.A greater weightage has been assigned to the impact at their club level since they play most of their games in a year for their clubs rather than their national teams.But from the goalkeeping point of view an almost equal weightage is given to impacts at national and club levels since goalkeeping is more of an individual criteria than a team play.The top 16 teams based on their impact is shown below.The groupings for this years World Cup has not been taken into account.
+
+<<>>=
+#=============================================================
+#### Final Impact
+#=============================================================
+no.nat <- match(nat.team.impact$National.Teams,
+                club.team.impact$National.Teams, nomatch = 0 )
+club.team.impact <- rbind(club.team.impact,
+                          data.frame(National.Teams = 
+                   nat.team.impact$National.Teams[which(no.nat == 0)], Impact = 0))
+final.pl.impact <- merge(nat.team.impact, 
+                         club.team.impact, by = "National.Teams")
+no.club <- match(nat.gl.team.impact$National.Teams,
+                 club.gl.team.impact$National.Teams, nomatch = 0 )
+club.gl.team.impact <- rbind(club.gl.team.impact,
+                             data.frame(National.Teams =
+                  nat.gl.team.impact$National.Teams[which(no.club == 0)], Impact = 0))
+final.gl.impact <- merge(nat.gl.team.impact,
+                         club.gl.team.impact, by = "National.Teams")
+final.pl.impact$Pl.impact <-
+  0.3*final.pl.impact$Impact.x + 0.7*final.pl.impact$Impact.y
+final.gl.impact$Goalie.impact <- 
+  0.6*final.gl.impact$gl.Impact + 0.4*final.gl.impact$Impact
+WC.impact <- merge(final.pl.impact, final.gl.impact, by = "National.Teams")
+WC.impact$Final.Impact <- 
+  (10/11)*WC.impact$Pl.impact + (1/11)*WC.impact$Goalie.impact
+head(WC.impact[order(WC.impact$Final.Impact, decreasing = T),c(1,8)],16)
+@
+National Teams of Chile,Switzerland,Belgium,Bosnia can be the surprise packages for this years World Cup.The teams that we expect to perform well are also seen to be doing pretty good.
+
+The top 20 players based on this season impact is shown below.Only those players who have featured atleast 20 times for their clubs and atleast 7 times for their nation in the previous season have been considered,since players who feature more are expected to be the better performing for their teams and clubs.
+<<>>=
+#=============================================================
+#### Best Players
+#=============================================================
+
+cl.impact <- subset(club.impact, Played > 20)
+#cl.impact[order(cl.impact$Impact, decreasing = T), ][1:15, c(2,3,4,15)]
+nt.impact <- subset(nat.impact, Played > 7)
+#nt.impact[order(nt.impact$Impact, decreasing = T), ][1:15, c(2,3,4,15) ]
+best.player <- merge(cl.impact, nt.impact, by = c("National.Teams", "NAME"))
+best.player$Total.impact <- 0.3*best.player$Impact.x + 0.7*best.player$Impact.y
+best.player[order(best.player$Total.impact, decreasing = T), ][1:20,c(1,2,29) ]
+@
+
+
+The top 7 goalkeepers based on this season impact is shown below.Only those who have featured atleast 20 times for their clubs and atleast 5 times for their nation in the previous season have been considered.
+
+<<>>=
+#=============================================================
+#### Best Goalkeeper
+#=============================================================
+  
+cl.gl.impact <- subset(club.gl.impact, Played > 20)
+#cl.gl.impact[order(cl.gl.impact$Impact, decreasing = T), ][1:7, c(2,3,13)]
+nt.gl.impact <- subset(nat.gl.impact, Played > 5)
+#nt.gl.impact[order(nt.gl.impact$Impact, decreasing = T), ][1:7, c(2,3,13) ]
+best.player <- merge(cl.gl.impact, nt.gl.impact, by = c("National.Teams", "NAME"))
+best.player$Total.impact <- 0.5*best.player$Impact.x + 0.5*best.player$Impact.y
+best.player[order(best.player$Total.impact, decreasing = T), ][1:7,c(1,2,25) ]
+@
+
+\end{enumerate}
+\end{document}
