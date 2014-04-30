@@ -1,0 +1,193 @@
+STAT 585X
+Favorites for the upcoming Soccer World Cup
+========================================================
+font-import: http://fonts.googleapis.com/css?family=Marcellus
+font-family: 'Marcellus'
+author: Abhishek Chakraborty
+date: April 30, 2014 
+width: 1680
+height: 1050
+
+
+
+
+```{r setup, include=FALSE}
+opts_chunk$set(cache=TRUE)
+options(width=80)
+```
+
+
+Project Motivation
+========================================================
+The soccer World Cup would probably be the biggest event during this summer.As always there is a lot of talk about the favorite teams, which teams are expected to go to the end, which player is going to be the talk of the tournament this time round.Being an ardent fan of the "most beautiful game on the planet", I have tried my bit to predict the favorite teams based on the performances of their players.
+
+The idea is to use the information about the players' national as well as the club performances for the current season to predict how well each nation is going to perform in the tournament.
+
+I take into account four of the best leagues in Europe,viz, English Premier League, German Bundesliga, Italian Serie A and the Spanish La Liga.
+
+The packages that have been used are XML, plyr, ggplot2.
+***
+<img src="plots/fuleco.png" alt="hexadecimal image" style="width: 900px;height: 900px"/>
+
+Data
+========================================================
+
+The data has been picked up from ESPN's website for soccer www.espnsoccernet.com. Here's how the data looks.
+<img src="plots/data.png" alt="hexadecimal image" style="width: 1600px;height: 700px"/>
+```
+GS: Games Started, SB: Used as Substitute, G: Goals, A: Assists, SH: Shots, SG: Shots on goal, YC: Yellow Cards, RC: Red Cards, FC: Fouls Committed, FS: Fouls Suffered, SV: Saves, GC: Goals conceded, W: Wins, L: Losses, D: Draws
+```
+
+Webscraping
+========================================================
+
+* The data for the 2013-14 season was available on ```ESPNFC``` website  www.espnsoccernet.com
+
+* Each club team and National Team had a unique ID.
+
+* Used ```for loops``` on the team ID's to obtain the data, separately for the National Teams and Club Teams.
+
+```
+url <- paste("../id/",i,"/season/2013/..",..)
+table <- readHTMLTable(url)
+goalie <- table[[1]]
+players <- table[[2]]
+```
+* Separated the data for a team into 2 sections, one for the Goalkeepers and another for the Outfield players.
+
+***
+<img src="plots/club-id.png" alt="hexadecimal image" style="width: 800px;height: 550px"/>
+
+<img src="plots/nation-id.png" alt="hexadecimal image" style="width: 800px;height: 300px"/>
+
+Working with the data
+========================================================
+
+* One of the problems with the data was that the information for some players was recorded twice. So for each player the information was clubbed to make it unique. Along with that there were players who have played for 2 different teams in this season. Those information were also clubbed together.
+
+* The squad stats included all the players in a team's roster (even the ones who did not make a single appearance during this season). Only those players were considered who started (or appeared as a sub) for atleast one game.
+
+* There were some problems with the nomenclature of the players. R did not seem to understand the diacritical marks that goes with some of the names.
+
+* The Games Started(GS) and Used as Substitute(SB) variables were added to determine the total no. of appearances this season(Played). Similarly Yellow Cards(YC) and Red Cards(RC) were also combined to get no. of cards(Cards).
+
+* I only considered the Played, Goals(G), Assists(A), Shots on goal(SG), Fouls Committed(FC), Cards for the Outfield players and Played, Saves(SV), Goals conceded(GC), Fouls Committed(FC), Cards for the Goalkeepers.
+
+Methodology
+========================================================
+
+* I had 4 datasets, one for Outfield players and another for Goalkeepers of the Natioanl Teams as well as the Club Teams. Only those players who play in one of the 4 leagues and has their nation playing in the World Cup have been considered.
+
+* Segment the Outfield players into 3 clusters by using k-means clustering techinique (one for each general position in a soccer field).
+
+* Segment the Goalkeepers into 2 clusters by k-means clustering.
+
+* Assign weights to each attribute in a cluster where the weights are determined by the ratio of the mean to the sum of the means. This helps in assigning a higher weight to attributes in which a player is good at.
+
+* Use those weights to determine the impact for a player at both club and national level.
+
+* The final impact of a National team is a mean of the weighted average of the impact for the national team and the impact for the club of each player.
+
+Graphical Summaries
+========================================================
+
+We can observe that cluster 2 mostly consists of the attacking players,cluster 1 consisting primarily of the midfield players and cluster 2 comprises of the defensive players.
+
+<img src="plots/nat_player_cl.png" alt="hexadecimal image" style="width: 800px;height: 500px"/>
+
+A similar kind of pattern is observed between the clusters for player performances in their respective clubs.
+
+***
+The Goalkeepers in cluster 1 perform much better than those in cluster 2. We can see this from the higher no. of saves(SV) and lesser no. of Goals conceded(GC)
+
+<img src="plots/nat_goalie_cl.png" alt="hexadecimal image" style="width: 800px;height: 500px"/>
+
+A similar kind of pattern is observed between the clusters for goalkeepers in their respective clubs.
+
+Graphical Summaries (continued)
+========================================================
+
+The plot below shows the impact for each nation participating in this World Cup based on their players' national performances for the past season.
+
+<img src="plots/nat_player_impact.png" alt="hexadecimal image" style="width: 1000px;height: 700px"/>
+
+***
+This plot on the other hand shows the impact that national teams would have if the club performances of their players are taken into account.
+
+<img src="plots/club_player_impact.png" alt="hexadecimal image" style="width: 1000px;height: 700px"/>
+
+Top Outfield Players
+========================================================
+
+The top 7 players to look out for in this World Cup would be
+
+```
+National Team        Name         Club Team          Total Impact
+  Portugal     Cristiano Ronaldo  Real Madrid           2.941870
+  Uruguay      Luis Suarez        Liverpool             2.739398
+  Italy        Mario Balotelli    AC Milan              2.602095
+  Chile        Arturo Vidal       Juventus              2.075077
+  Brazil       Neymar             FC Barcelona          2.062578
+  England      Wayne Rooney       Manchester United     1.919792
+  Argentina    Sergio Aguero      Manchester City       1.761637
+```
+
+
+
+Their impact for their National Team is based on their performances for their clubs as well as their performances for the respective National teams over the past year. To decide their Total Impact, more weightage has been given to their Club Team performances since they play most of their matches in a season for their respective clubs.
+
+Top Goalkeepers
+========================================================
+
+Similarly looking at the probable list of top performing Goalkeepers, we have
+
+
+```
+National Team                Name            CLub Team     Total Impact
+  Chile                  Claudio Bravo     Real Sociedad     3.375369
+  United States          Tim Howard        Everton           2.988069
+  Italy                  Gianluigi Buffon  Juventus          2.749940
+  Switzerland            Diego Benaglio    VfL Wolfsburg     2.545326
+  Bosnia and Herzegovina Asmir Begovic     Stoke City        2.389570
+```
+
+Since Goalkeeping is more of a solitary role and is based on individual performances, same weightage has been given to both club and National team performance.
+
+
+2014 World Cup
+========================================================
+
+32 teams have been divided into 8 groups with 4 teams in each group. The top two teams from each group will qualify for the Pre-Quarter final round. The knock-out format applies from this round. Based on the final impact of the teams, a probable scenario is shown below. Let us start with the group stage.
+
+<img src="plots/Groupings.png" alt="hexadecimal image" style="width: 1600px;"/>
+
+The teams in the group have been shown in decreasing order of their final impact. The teams marked in ```green``` are expected to progress from their group stage. A close fight is predicted between the teams marked in ```yellow```, since there is negligible difference in their impacts. We will just assume that teams with higher impact progress.
+
+2014 World Cup
+========================================================
+
+The fixtures and results for the Pre-Quarter final are shown below.
+
+<img src="plots/Pre-quarter.png" alt="hexadecimal image" style="width: 800px;height: 600px"/>
+
+Again the teams marked in ```green``` progress but it is very close between teams in ```yellow```.
+
+***
+Moving on to the Quarter finals,we see that 2 out of the 4 matches have very little to separate the teams in action.
+
+<img src="plots/Quarter.png" alt="hexadecimal image" style="width: 1000px;height: 300px"/>
+
+We still continue to pick the teams with a higher impact. Having said that the teams like Argentina and Germany almost have an equal chance to make it to the semi finals instead of Switzerland and France respectively.
+
+2014 World Cup
+========================================================
+
+The line up for the Semi finals has been shown below. As already pointed out Argentina and Germany could have been the semi finalists instead of Switzerland and France.
+
+<img src="plots/Semis.png" alt="hexadecimal image" style="width: 1600px;"/>
+
+Moving on to the all important final we see that Italy have a very good chance of lifting the World Cup this year.
+
+<img src="plots/Final.png" alt="hexadecimal image" style="width: 1600px;"/>
+
+Defending champions Spain have very little chance (notice that they cannot even make out of the group stages). Teams like Chile, Bosnia, Switzerland and Belgium are going to be the surprise packages in this edition of the World Cup.
